@@ -19,7 +19,7 @@ print("Loading QoQ-Med-VL-7B model...")
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     "ddvd233/QoQ-Med-VL-7B",
     torch_dtype=torch.bfloat16,
-    attn_implementation="flash_attention_2",  # Using eager implementation (compatible without flash_attn)
+    attn_implementation="flash_attention_2",  # Requires Ampere (A100) or newer GPUs
     device_map="auto",
 )
 
@@ -32,7 +32,7 @@ print("Model loaded successfully!")
 # Step 2: Prepare your input
 # ============================================================================
 # Replace with your actual image path
-image_path = "/cis/home/xhan56/code/QoQ_Med/datasets/head_ct.jpg"
+image_path = "/projects/LCICM/Xing_Scripts/QoQ_Med_JHH/datasets/sample_cxr.jpg"
 
 messages = [
     {
