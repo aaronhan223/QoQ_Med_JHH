@@ -3,7 +3,8 @@
 #SBATCH --output=logs/inference_%j.out
 #SBATCH --error=logs/inference_%j.err
 #SBATCH --time=00:20:00
-#SBATCH --partition=gpua100
+#SBATCH --partition=interactive
+#SBATCH --nodelist=gpu317
 #SBATCH --gres=gpu:1
 #SBATCH --mail-user=xhan56@jh.edu
 #SBATCH --mail-type=end
