@@ -1,0 +1,52 @@
+[
+  {
+    "encounter_id": "1068349040.0",
+    "patient_id": "e4a57839...",
+    "specialty": "Pediatric Emergency Medicine",
+    "admission_type": 2.0,
+    "los_hours": 1.6,
+    "encounter_summary": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1068349040.0\nPatient ID: e4a57839...\n\nADMISSION DETAILS:\n- Admission Type: Urgent\n- ED Visit: Yes\n- Arrival Time: 2015-03-06 20:42:00\n- Admission Time: 2015-03-06 21:24:00\n- Discharge Time: 2015-03-06 23:00:00\n- Length of Stay: 1.6 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Pediatric Emergency Medicine\n- Hospital Service: Emergency Medicine\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: nan\n- Discharge Provider: nan\n\nOUTCOME:\n- Discharge Disposition: Home\n",
+    "full_prompt": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1068349040.0\nPatient ID: e4a57839...\n\nADMISSION DETAILS:\n- Admission Type: Urgent\n- ED Visit: Yes\n- Arrival Time: 2015-03-06 20:42:00\n- Admission Time: 2015-03-06 21:24:00\n- Discharge Time: 2015-03-06 23:00:00\n- Length of Stay: 1.6 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Pediatric Emergency Medicine\n- Hospital Service: Emergency Medicine\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: nan\n- Discharge Provider: nan\n\nOUTCOME:\n- Discharge Disposition: Home\n\n\nBased on this patient encounter summary, please provide:\n1. A brief clinical analysis of the admission pattern\n2. Notable observations about the care delivery (length of stay, department, etc.)\n3. Any potential areas of concern or interest from a quality improvement perspective",
+    "task": "analysis"
+  },
+  {
+    "encounter_id": "1310060545.0",
+    "patient_id": "53e894b1...",
+    "specialty": "Behavioral Health",
+    "admission_type": 15.0,
+    "los_hours": 98.53,
+    "encounter_summary": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1310060545.0\nPatient ID: 53e894b1...\n\nADMISSION DETAILS:\n- Admission Type: Unknown\n- ED Visit: No\n- Arrival Time: nan\n- Admission Time: 2020-05-14 17:12:00\n- Discharge Time: 2020-05-18 19:44:00\n- Length of Stay: 98.53 hours (4.1 days)\n\nCLINICAL SERVICE:\n- Department Specialty: Behavioral Health\n- Hospital Service: Psychiatry\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: DEOREO, ELIZABETH\n- Discharge Provider: DEOREO, ELIZABETH\n\nOUTCOME:\n- Discharge Disposition: Transfer\n",
+    "full_prompt": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1310060545.0\nPatient ID: 53e894b1...\n\nADMISSION DETAILS:\n- Admission Type: Unknown\n- ED Visit: No\n- Arrival Time: nan\n- Admission Time: 2020-05-14 17:12:00\n- Discharge Time: 2020-05-18 19:44:00\n- Length of Stay: 98.53 hours (4.1 days)\n\nCLINICAL SERVICE:\n- Department Specialty: Behavioral Health\n- Hospital Service: Psychiatry\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: DEOREO, ELIZABETH\n- Discharge Provider: DEOREO, ELIZABETH\n\nOUTCOME:\n- Discharge Disposition: Transfer\n\n\nBased on this patient encounter summary, please provide:\n1. A brief clinical analysis of the admission pattern\n2. Notable observations about the care delivery (length of stay, department, etc.)\n3. Any potential areas of concern or interest from a quality improvement perspective",
+    "task": "analysis"
+  },
+  {
+    "encounter_id": "1293072418.0",
+    "patient_id": "78b100b1...",
+    "specialty": "Surgery",
+    "admission_type": 3.0,
+    "los_hours": 6.27,
+    "encounter_summary": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1293072418.0\nPatient ID: 78b100b1...\n\nADMISSION DETAILS:\n- Admission Type: Elective\n- ED Visit: No\n- Arrival Time: nan\n- Admission Time: 2019-07-30 12:40:00\n- Discharge Time: 2019-07-30 18:56:00\n- Length of Stay: 6.27 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Surgery\n- Hospital Service: Cardiology\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: CHACKO, MATTHEWS\n- Discharge Provider: CHACKO, MATTHEWS\n\nOUTCOME:\n- Discharge Disposition: Home\n",
+    "full_prompt": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1293072418.0\nPatient ID: 78b100b1...\n\nADMISSION DETAILS:\n- Admission Type: Elective\n- ED Visit: No\n- Arrival Time: nan\n- Admission Time: 2019-07-30 12:40:00\n- Discharge Time: 2019-07-30 18:56:00\n- Length of Stay: 6.27 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Surgery\n- Hospital Service: Cardiology\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: CHACKO, MATTHEWS\n- Discharge Provider: CHACKO, MATTHEWS\n\nOUTCOME:\n- Discharge Disposition: Home\n\n\nBased on this patient encounter summary, please provide:\n1. A brief clinical analysis of the admission pattern\n2. Notable observations about the care delivery (length of stay, department, etc.)\n3. Any potential areas of concern or interest from a quality improvement perspective",
+    "task": "analysis"
+  },
+  {
+    "encounter_id": "1418382521.0",
+    "patient_id": "432acbe1...",
+    "specialty": "Emergency Medicine",
+    "admission_type": 1.0,
+    "los_hours": 3.72,
+    "encounter_summary": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1418382521.0\nPatient ID: 432acbe1...\n\nADMISSION DETAILS:\n- Admission Type: Emergency\n- ED Visit: Yes\n- Arrival Time: 2023-11-12 15:27:00\n- Admission Time: 2023-11-12 15:36:00\n- Discharge Time: 2023-11-12 19:19:00\n- Length of Stay: 3.72 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Emergency Medicine\n- Hospital Service: ED Observation\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: nan\n- Discharge Provider: LE, HAI HOANG\n\nOUTCOME:\n- Discharge Disposition: Home\n",
+    "full_prompt": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1418382521.0\nPatient ID: 432acbe1...\n\nADMISSION DETAILS:\n- Admission Type: Emergency\n- ED Visit: Yes\n- Arrival Time: 2023-11-12 15:27:00\n- Admission Time: 2023-11-12 15:36:00\n- Discharge Time: 2023-11-12 19:19:00\n- Length of Stay: 3.72 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Emergency Medicine\n- Hospital Service: ED Observation\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: nan\n- Discharge Provider: LE, HAI HOANG\n\nOUTCOME:\n- Discharge Disposition: Home\n\n\nBased on this patient encounter summary, please provide:\n1. A brief clinical analysis of the admission pattern\n2. Notable observations about the care delivery (length of stay, department, etc.)\n3. Any potential areas of concern or interest from a quality improvement perspective",
+    "task": "analysis"
+  },
+  {
+    "encounter_id": "1427476814.0",
+    "patient_id": "2735f94d...",
+    "specialty": "Surgery",
+    "admission_type": 3.0,
+    "los_hours": 2.9,
+    "encounter_summary": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1427476814.0\nPatient ID: 2735f94d...\n\nADMISSION DETAILS:\n- Admission Type: Elective\n- ED Visit: No\n- Arrival Time: nan\n- Admission Time: 2024-02-23 08:11:00\n- Discharge Time: 2024-02-23 11:05:00\n- Length of Stay: 2.9 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Surgery\n- Hospital Service: Surgery\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: DAHER, RAMSEY JOSEPH\n- Discharge Provider: DAHER, RAMSEY JOSEPH\n\nOUTCOME:\n- Discharge Disposition: Home\n",
+    "full_prompt": "PATIENT ENCOUNTER SUMMARY\n\nEncounter ID: 1427476814.0\nPatient ID: 2735f94d...\n\nADMISSION DETAILS:\n- Admission Type: Elective\n- ED Visit: No\n- Arrival Time: nan\n- Admission Time: 2024-02-23 08:11:00\n- Discharge Time: 2024-02-23 11:05:00\n- Length of Stay: 2.9 hours\n\nCLINICAL SERVICE:\n- Department Specialty: Surgery\n- Hospital Service: Surgery\n- Service Area: JHM CLINICAL\n\nPROVIDERS:\n- Admitting Provider: DAHER, RAMSEY JOSEPH\n- Discharge Provider: DAHER, RAMSEY JOSEPH\n\nOUTCOME:\n- Discharge Disposition: Home\n\n\nBased on this patient encounter summary, please provide:\n1. A brief clinical analysis of the admission pattern\n2. Notable observations about the care delivery (length of stay, department, etc.)\n3. Any potential areas of concern or interest from a quality improvement perspective",
+    "task": "analysis"
+  }
+]
