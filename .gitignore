@@ -58,3 +58,6 @@ wheels/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Ignore specific dataset file (do not track this CSV)
+/datasets/*.csv

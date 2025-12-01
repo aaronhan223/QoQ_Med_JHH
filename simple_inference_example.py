@@ -32,7 +32,7 @@ print("Model loaded successfully!")
 # Step 2: Prepare your input
 # ============================================================================
 # Replace with your actual image path
-image_path = "/projects/LCICM/Xing_Scripts/QoQ_Med_JHH/datasets/sample_cxr.jpg"
+image_path = "/projects/LCICM/Xing_Scripts/QoQ_Med_JHH/datasets/head_ct.jpg"
 
 messages = [
     {
