@@ -63,7 +63,7 @@ CLINICAL SERVICE:
 - Hospital Service: Psychiatry
 - Service Area: JHM CLINICAL
 
-PROVIDERS:
+PROVIDERS: (no need)
 - Admitting Provider: DEOREO, ELIZABETH
 - Discharge Provider: DEOREO, ELIZABETH
 

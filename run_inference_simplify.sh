@@ -67,7 +67,7 @@ echo "=========================================="
 
 # Run the inference script
 echo "Running simple_inference_example.py..."
-python simple_inference_example.py
+python inpatient_inference.py
 
 # Print completion time
 echo "=========================================="

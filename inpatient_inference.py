@@ -360,7 +360,7 @@ def main():
     
     # You can customize these parameters:
     config = {
-        'num_samples': 3,  # Number of encounters to analyze
+        'num_samples': 5,  # Number of encounters to analyze
         'task': 'analysis',  # Options: 'analysis', 'prediction', 'risk', 'recommendations', 'summary'
         'filter_criteria': None,  # Example: {'dep_speciality': 'Emergency Medicine'}
         'output_file': 'inpatient_analysis_results.txt'
