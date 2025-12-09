@@ -61,3 +61,7 @@ htmlcov/
 
 # Ignore specific dataset file (do not track this CSV)
 /datasets/*.csv
+/*.json
+/*.txt
+/*.jsonl
+/docs
