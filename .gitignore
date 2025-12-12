@@ -65,3 +65,4 @@ htmlcov/
 /*.txt
 /*.jsonl
 /docs
+/deprecated

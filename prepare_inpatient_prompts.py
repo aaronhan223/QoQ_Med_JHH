@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-Inpatient Data Formatter for Medical LLM Inference
+Inpatient Data Formatter for Medical LLM Inference - MCQ-5: Length of Stay Category
 
 This script formats inpatient encounter data into structured clinical narratives
-without running the actual model inference. Useful for preparing prompts and
-testing data formatting before running expensive GPU inference.
+for Length of Stay prediction tasks (MCQ-5 from designed_qa_questions.txt).
+Generates QA pairs following the format from jeannieshe/multimodal repository.
+
+MCQ-5 Categories:
+- A. Short stay (0-2 days)
+- B. Moderate stay (3-7 days)
+- C. Extended stay (8-14 days)
+- D. Long-term stay (>14 days)
 """
 
 import pandas as pd
@@ -12,23 +18,51 @@ import numpy as np
 from pathlib import Path
 from datetime import datetime
 import json
+import uuid
 
 
 def calculate_length_of_stay(row):
-    """Calculate length of stay in hours"""
+    """Calculate length of stay in hours and days"""
     try:
         if pd.notna(row['hosp_admsn_time']) and pd.notna(row['hosp_disch_time']):
             adm = pd.to_datetime(row['hosp_admsn_time'])
             disch = pd.to_datetime(row['hosp_disch_time'])
             los_hours = (disch - adm).total_seconds() / 3600
-            return round(los_hours, 2) if los_hours >= 0 else None
+            los_days = los_hours / 24
+            return round(los_hours, 2), round(los_days, 2) if los_hours >= 0 else (None, None)
     except:
         pass
-    return None
+    return None, None
+
+
+def categorize_los(los_days):
+    """
+    Categorize length of stay into MCQ-5 categories
+    Returns: (category_letter, category_description)
+    """
+    if los_days is None:
+        return None, None
+    
+    if los_days <= 2:
+        return "A", "Short stay (0-2 days)"
+    elif los_days <= 7:
+        return "B", "Moderate stay (3-7 days)"
+    elif los_days <= 14:
+        return "C", "Extended stay (8-14 days)"
+    else:
+        return "D", "Long-term stay (>14 days)"
+
+
+def qa_id():
+    """Generate a unique QA ID"""
+    return str(uuid.uuid4())
 
 
 def format_patient_encounter(row):
-    """Format a patient encounter record into a structured clinical narrative"""
+    """
+    Format a patient encounter record into a structured clinical narrative
+    for Length of Stay prediction (MCQ-5)
+    """
     
     # Extract key information
     patient_id = row.get('osler_id', 'Unknown')
@@ -45,22 +79,9 @@ def format_patient_encounter(row):
                           4.0: 'Newborn', 5.0: 'Trauma'}
     admission_type = admission_type_map.get(admission_type_code, 'Unknown')
     
-    # Discharge disposition
-    disch_disp_code = row.get('disch_disp_c')
-    disch_disp_map = {1.0: 'Home', 2.0: 'Transfer', 3.0: 'Skilled Nursing Facility',
-                      4.0: 'Expired', 5.0: 'Left Against Medical Advice', 6.0: 'Home Health'}
-    discharge_disposition = disch_disp_map.get(disch_disp_code, 'Unknown')
-    
     # Time information
     admission_time = row.get('hosp_admsn_time', 'Unknown')
-    discharge_time = row.get('hosp_disch_time', 'Unknown')
     arrival_time = row.get('adt_arrival_time', 'Unknown')
-    
-    # Calculate length of stay
-    los = calculate_length_of_stay(row)
-    los_text = f"{los} hours" if los else "Unknown"
-    if los and los >= 24:
-        los_text = f"{los} hours ({los/24:.1f} days)"
     
     # ED visit
     ed_visit = row.get('ed_visit_yn', 'N')
@@ -68,104 +89,84 @@ def format_patient_encounter(row):
     
     # Providers
     admission_prov = row.get('admission_prov', 'Not recorded')
-    discharge_prov = row.get('discharge_prov', 'Not recorded')
     
-    # Create structured narrative
-    narrative = f"""PATIENT ENCOUNTER SUMMARY
+    # Demographics (if available from other sources)
+    # For now, we'll include basic encounter info
+    
+    # Create structured narrative for LOS prediction
+    # Following the style from the GitHub repo examples
+    narrative = f"""Patient is admitted through {admission_type.lower()} admission.
 
-Encounter ID: {encounter_id}
-Patient ID: {patient_id[:8]}...
-
-ADMISSION DETAILS:
-- Admission Type: {admission_type}
+Admission Details:
 - ED Visit: {ed_text}
 - Arrival Time: {arrival_time}
 - Admission Time: {admission_time}
-- Discharge Time: {discharge_time}
-- Length of Stay: {los_text}
+- Admitting Provider: {admission_prov}
 
-CLINICAL SERVICE:
+Clinical Service:
 - Department Specialty: {specialty}
 - Hospital Service: {hospital_service}
 - Service Area: {service_area}
 
-PROVIDERS:
-- Admitting Provider: {admission_prov}
-- Discharge Provider: {discharge_prov}
-
-OUTCOME:
-- Discharge Disposition: {discharge_disposition}
-"""
+The patient is being admitted for further evaluation and treatment."""
     
     return narrative
 
 
-def create_clinical_prompt(encounter_text, task="analysis"):
-    """Create different types of clinical prompts based on the task"""
+def create_los_qa_prompt(encounter_text):
+    """
+    Create Length of Stay (MCQ-5) prompt following the format from 
+    jeannieshe/multimodal repository.
     
-    prompts = {
-        "analysis": f"""{encounter_text}
-
-Based on this patient encounter summary, please provide:
-1. A brief clinical analysis of the admission pattern
-2. Notable observations about the care delivery (length of stay, department, etc.)
-3. Any potential areas of concern or interest from a quality improvement perspective""",
-        
-        "prediction": f"""{encounter_text}
-
-Based on this encounter data, please analyze:
-1. Factors that may have influenced the length of stay
-2. Whether the discharge disposition seems appropriate given the admission type
-3. Any patterns that might predict readmission risk""",
-        
-        "risk": f"""{encounter_text}
-
-From a clinical risk management perspective, please evaluate:
-1. High-risk indicators in this encounter
-2. Appropriateness of care transitions
-3. Potential quality or safety concerns""",
-        
-        "recommendations": f"""{encounter_text}
-
-Based on this encounter, please provide:
-1. Recommendations for similar cases
-2. Care coordination considerations
-3. Opportunities for improving patient flow or outcomes""",
-        
-        "summary": f"""{encounter_text}
-
-Please provide a concise clinical summary highlighting the key aspects of this inpatient encounter."""
-    }
+    Based on create_qa_pairs_with_metadata.py question_type == 6
+    """
     
-    return prompts.get(task, prompts["analysis"])
+    problem = (
+        "Below is a history of a patient:\n"
+        f"They have the following medical history: {encounter_text}\n"
+        f"How long will the patient stay in the hospital?\n"
+        f"A. Short stay (0-2 days)\n"
+        f"B. Moderate stay (3-7 days)\n"
+        f"C. Extended stay (8-14 days)\n"
+        f"D. Long-term stay (>14 days)"
+    )
+    
+    return problem
 
 
 def prepare_inference_data(
     data_path,
     num_samples=5,
-    task="analysis",
     filter_criteria=None,
-    output_format="text"
+    output_format="jsonl",
+    exclude_missing_discharge=True
 ):
     """
-    Prepare formatted prompts from the inpatient data
+    Prepare formatted QA pairs from the inpatient data for MCQ-5: Length of Stay Category
+    Following the format from jeannieshe/multimodal repository
     
     Args:
         data_path: Path to CSV file
         num_samples: Number of encounters to prepare
-        task: Type of analysis prompt
         filter_criteria: Dict of filters
-        output_format: 'text', 'json', or 'both'
+        output_format: 'jsonl', 'text', or 'both'
+        exclude_missing_discharge: If True, only use completed encounters with discharge times
     
     Returns:
-        List of prepared prompts
+        List of prepared QA pairs in JSONL format
     """
     
     print(f"\nLoading data from: {data_path}")
     df = pd.read_csv(data_path)
     print(f"Total encounters: {len(df):,}")
     
-    # Apply filters
+    # Filter out encounters without discharge times (can't calculate LOS)
+    if exclude_missing_discharge:
+        initial_count = len(df)
+        df = df[pd.notna(df['hosp_disch_time']) & pd.notna(df['hosp_admsn_time'])]
+        print(f"Encounters with complete admission/discharge times: {len(df):,} (filtered {initial_count - len(df):,})")
+    
+    # Apply additional filters
     if filter_criteria:
         print(f"\nApplying filters: {filter_criteria}")
         for col, value in filter_criteria.items():
@@ -179,8 +180,7 @@ def prepare_inference_data(
     else:
         df_sample = df.head(num_samples)
     
-    print(f"\nPreparing {len(df_sample)} encounters for inference...")
-    print(f"Task: {task}")
+    print(f"\nPreparing {len(df_sample)} encounters for Length of Stay prediction (MCQ-5)...")
     print("=" * 80)
     
     prepared_data = []
@@ -190,53 +190,91 @@ def prepare_inference_data(
         print(f"ENCOUNTER {idx}/{len(df_sample)}")
         print(f"{'='*80}")
         
-        # Format encounter
+        # Calculate actual LOS
+        los_hours, los_days = calculate_length_of_stay(row)
+        
+        if los_days is None:
+            print(f"Skipping encounter - unable to calculate LOS")
+            continue
+        
+        # Categorize LOS
+        los_category, los_description = categorize_los(los_days)
+        
+        # Format encounter information (WITHOUT discharge info - this is for prediction)
         encounter_text = format_patient_encounter(row)
-        prompt = create_clinical_prompt(encounter_text, task=task)
         
-        print(prompt)
+        # Create QA prompt
+        problem = create_los_qa_prompt(encounter_text)
         
-        prepared_data.append({
+        print(f"\nEncounter ID: {row.get('pat_enc_csn_id')}")
+        print(f"Actual LOS: {los_days:.2f} days ({los_hours:.2f} hours)")
+        print(f"LOS Category: {los_category} - {los_description}")
+        print(f"\n{problem}")
+        
+        # Create QA pair following the GitHub repo format
+        qa_pair = {
+            'qa_id': qa_id(),
+            'qa_type': 6,  # Type 6 corresponds to Length of Stay question
+            'format': 'Multiple Choice',
+            'question': problem,
+            'images': [],  # No images in our dataset
+            'time-series': [],  # No time-series data
+            'choices': [
+                'A. Short stay (0-2 days)',
+                'B. Moderate stay (3-7 days)',
+                'C. Extended stay (8-14 days)',
+                'D. Long-term stay (>14 days)'
+            ],
+            'correct_choice': los_category,
+            'answer': los_category,
             'encounter_id': str(row.get('pat_enc_csn_id')),
-            'patient_id': str(row.get('osler_id'))[:8] + '...',
+            'patient_id': str(row.get('osler_id')),
             'specialty': str(row.get('dep_speciality')),
-            'admission_type': row.get('hosp_admsn_type_c'),
-            'los_hours': calculate_length_of_stay(row),
-            'encounter_summary': encounter_text,
-            'full_prompt': prompt,
-            'task': task
-        })
+            'hospital_service': str(row.get('hospital_service')),
+            'admission_type_c': int(row.get('hosp_admsn_type_c')) if pd.notna(row.get('hosp_admsn_type_c')) else None,
+            'admission_time': str(row.get('hosp_admsn_time')),
+            'discharge_time': str(row.get('hosp_disch_time')),
+            'los_days': float(los_days),
+            'los_hours': float(los_hours),
+            'ed_visit': str(row.get('ed_visit_yn', 'N'))
+        }
+        
+        prepared_data.append(qa_pair)
     
     # Save outputs
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     
+    if output_format in ['jsonl', 'both']:
+        jsonl_file = f'los_qa_pairs_{timestamp}.jsonl'
+        with open(jsonl_file, 'w') as f:
+            for qa in prepared_data:
+                f.write(json.dumps(qa) + '\n')
+        
+        print(f"\n✓ JSONL file saved: {jsonl_file}")
+    
     if output_format in ['text', 'both']:
-        text_file = f'prepared_prompts_{timestamp}.txt'
+        text_file = f'los_qa_pairs_{timestamp}.txt'
         with open(text_file, 'w') as f:
-            f.write(f"Prepared Prompts for Medical LLM Inference\n")
+            f.write(f"Length of Stay Prediction QA Pairs (MCQ-5)\n")
             f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write(f"Task: {task}\n")
-            f.write(f"Total encounters: {len(prepared_data)}\n")
+            f.write(f"Total QA pairs: {len(prepared_data)}\n")
             f.write("=" * 80 + "\n\n")
             
-            for i, data in enumerate(prepared_data, 1):
+            for i, qa in enumerate(prepared_data, 1):
                 f.write(f"\n{'='*80}\n")
-                f.write(f"ENCOUNTER {i}\n")
+                f.write(f"QA PAIR {i}\n")
                 f.write(f"{'='*80}\n\n")
-                f.write(data['full_prompt'])
-                f.write("\n\n")
+                f.write(f"Question:\n{qa['question']}\n\n")
+                f.write(f"Correct Answer: {qa['correct_choice']}\n")
+                f.write(f"Actual LOS: {qa['los_days']:.2f} days\n")
+                f.write(f"Encounter ID: {qa['encounter_id']}\n")
+                f.write(f"Specialty: {qa['specialty']}\n\n")
         
-        print(f"\n✓ Text file saved: {text_file}")
-    
-    if output_format in ['json', 'both']:
-        json_file = f'prepared_prompts_{timestamp}.json'
-        with open(json_file, 'w') as f:
-            json.dump(prepared_data, f, indent=2)
-        
-        print(f"✓ JSON file saved: {json_file}")
+        print(f"✓ Text file saved: {text_file}")
     
     print(f"\n{'='*80}")
-    print(f"✓ Prepared {len(prepared_data)} prompts for inference")
+    print(f"✓ Prepared {len(prepared_data)} QA pairs for inference")
+    print(f"✓ Format: Multiple Choice (MCQ-5: Length of Stay Category)")
     print(f"{'='*80}\n")
     
     return prepared_data
@@ -246,7 +284,8 @@ def main():
     """Main execution"""
     
     print("="*80)
-    print("Inpatient Data Formatter for Medical LLM")
+    print("Length of Stay QA Pair Generator (MCQ-5)")
+    print("Based on designed_qa_questions.txt")
     print("="*80)
     
     # Configuration
@@ -257,30 +296,35 @@ def main():
         return
     
     config = {
-        'num_samples': 5,
-        'task': 'analysis',  # Options: 'analysis', 'prediction', 'risk', 'recommendations', 'summary'
+        'num_samples': 10,  # Number of QA pairs to generate
         'filter_criteria': None,  # Example: {'dep_speciality': 'Emergency Medicine'}
-        'output_format': 'both'  # Options: 'text', 'json', 'both'
+        'output_format': 'both',  # Options: 'jsonl', 'text', 'both'
+        'exclude_missing_discharge': True  # Only use completed encounters
     }
     
     print(f"\nConfiguration:")
     print(f"  - Data path: {data_path}")
     print(f"  - Number of samples: {config['num_samples']}")
-    print(f"  - Task type: {config['task']}")
     print(f"  - Filters: {config['filter_criteria']}")
     print(f"  - Output format: {config['output_format']}")
+    print(f"  - Exclude incomplete encounters: {config['exclude_missing_discharge']}")
     
-    # Prepare data
+    # Prepare QA pairs
     prepared_data = prepare_inference_data(
         data_path=data_path,
         num_samples=config['num_samples'],
-        task=config['task'],
         filter_criteria=config['filter_criteria'],
-        output_format=config['output_format']
+        output_format=config['output_format'],
+        exclude_missing_discharge=config['exclude_missing_discharge']
     )
     
-    print(f"\n✓ Data preparation completed!")
-    print(f"✓ {len(prepared_data)} prompts ready for model inference")
+    print(f"\n✓ QA pair generation completed!")
+    print(f"✓ {len(prepared_data)} QA pairs ready for model inference")
+    print(f"\nQA Pair Format:")
+    print(f"  - Question Type: MCQ-5 (Length of Stay Category)")
+    print(f"  - Format: Multiple Choice (4 options)")
+    print(f"  - Categories: A (0-2 days), B (3-7 days), C (8-14 days), D (>14 days)")
+    print(f"  - Metadata: Includes encounter details, actual LOS, specialty, etc.")
 
 
 if __name__ == "__main__":
